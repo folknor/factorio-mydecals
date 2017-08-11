@@ -1,0 +1,11 @@
+{
+	"name": "mydecals",
+	"version": "0.1.8",
+	"title": "Decals",
+	"description": "Allows you to spray-paint decals on the ground.",
+	"author": "folk",
+	"contact": "",
+	"homepage": "https://forums.factorio.com/viewtopic.php?f=94&t=45554",
+	"factorio_version": "0.15",
+	"license": "CC-BY-NC 4.0"
+}

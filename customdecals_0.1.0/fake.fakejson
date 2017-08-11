@@ -1,0 +1,12 @@
+{
+	"name": "customdecals",
+	"version": "0.1.1",
+	"title": "Decals - Local",
+	"description": "Your own decals.",
+	"author": "Santa",
+	"contact": "",
+	"homepage": "",
+	"factorio_version": "0.15",
+	"dependencies": ["base >= 0.15.0"],
+	"license": "CC-BY-NC 4.0"
+}

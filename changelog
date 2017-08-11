@@ -1,0 +1,18 @@
+0.1.8: Fix problem when you build a lamp from blueprint before using a decal.
+0.1.7: Update for 0.15.10.
+0.1.6: Remove some unneeded recipes and items.
+0.1.5: Update for 0.15.
+0.1.4
+	- Moved decals to their own item group so that they are filtered
+	  more sanely in the combinator signals (dont use them, they can
+	  change between mod updates!)
+	- Prevent 3rd party decal mods from adding new decals with
+	  the same filenames as the core ones
+	- You can now ignore making an icon for your custom decals and
+	  it will use the question-mark icon.
+
+0.1.3
+	- Added pssh-psshh sound when applying a decal
+
+0.1.0-0.1.2
+	- Initial version
