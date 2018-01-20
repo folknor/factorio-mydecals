@@ -87,7 +87,7 @@ do
 			name = "decal-spray",
 			flags = { "not-on-map" },
 			animations = { {
-				filename = "__base__/graphics/terrain/blank.png",
+				filename = "__mydecals__/graphics/blank.png",
 				priority = "low",
 				width = 32,
 				height = 128,
@@ -106,7 +106,8 @@ do
 			name = "mydecals-mod",
 			order = "z",
 			inventory_order = "z",
-			icon = "__mydecals__/graphics/decal-book.png"
+			icon = "__mydecals__/graphics/decal-book.png",
+			icon_size = 32,
 		},
 		{
 			type = "item-subgroup",
