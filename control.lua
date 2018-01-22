@@ -70,13 +70,6 @@ local function ensureBook(player)
 	end
 end
 
-local function onEnsureEvent(event)
-	local p = game.players[event.player_index]
-	if not p or not p.valid then return end
-	local book = ensureBook(p)
-	if book then ensureDecals(book) end
-end
-
 script.on_event(defines.events.on_built_entity, function(event)
 	if not decalEntities then return end
 	local e = event.created_entity
@@ -96,34 +89,51 @@ script.on_event(defines.events.on_built_entity, function(event)
 	end
 end)
 
-local function onCursorChanged(event)
-	local p = game.players[event.player_index]
-	if p.cursor_stack and p.cursor_stack.valid and p.cursor_stack.valid_for_read and p.cursor_stack.name == "decal-blueprint" then
-		-- Makes the item move to the inventory and triggers onInventoryChanged below
-		p.clean_cursor()
+do
+	local function onInventoryChanged(player, inventory)
+		local decal = inventory.find_item_stack("decal-blueprint")
+		if not decal then return end
+		decal.clear() -- Nukes it
+		local book = ensureBook(player)
+		if book then ensureDecals(book) end
 	end
+	script.on_event(defines.events.on_player_main_inventory_changed, function(event)
+		local p = game.players[event.player_index]
+		onInventoryChanged(p, p.get_inventory(defines.inventory.player_main))
+	end)
+	script.on_event(defines.events.on_player_quickbar_inventory_changed, function(event)
+		local p = game.players[event.player_index]
+		onInventoryChanged(p, p.get_inventory(defines.inventory.player_quickbar))
+	end)
 end
 
-local function onInventoryChanged(player, inventory)
-	local decal = inventory.find_item_stack("decal-blueprint")
-	if not decal then return end
-	decal.clear() -- Nukes it
-	local book = ensureBook(player)
-	if book then ensureDecals(book) end
+do
+	local function onCursorChanged(event)
+		local p = game.players[event.player_index]
+		if p.cursor_stack and p.cursor_stack.valid and p.cursor_stack.valid_for_read and p.cursor_stack.name == "decal-blueprint" then
+			-- Makes the item move to the inventory and triggers onInventoryChanged below
+			p.clean_cursor()
+		end
+	end
+	script.on_event(defines.events.on_player_cursor_stack_changed, onCursorChanged)
 end
 
-script.on_event(defines.events.on_player_main_inventory_changed, function(event)
-	local p = game.players[event.player_index]
-	onInventoryChanged(p, p.get_inventory(defines.inventory.player_main))
-end)
-script.on_event(defines.events.on_player_quickbar_inventory_changed, function(event)
-	local p = game.players[event.player_index]
-	onInventoryChanged(p, p.get_inventory(defines.inventory.player_quickbar))
-end)
+do
+	local function ensure(player)
+		if not player or not player.valid then return end
+		local book = ensureBook(player)
+		if book then ensureDecals(book) end
+	end
 
-script.on_event(defines.events.on_player_cursor_stack_changed, onCursorChanged)
+	local function ensureSingle(event)
+		ensure(game.players[event.player_index])
+	end
+	script.on_event(defines.events.on_player_created, ensureSingle)
+	script.on_event(defines.events.on_player_joined_game, ensureSingle)
 
--- I have never played multiplayer so I dont know if both events happen or
--- in which order they happen.
-script.on_event(defines.events.on_player_created, onEnsureEvent)
---script.on_event(defines.events.on_player_joined_game, onEnsureEvent)
+	local function ensureAll()
+		for _, p in pairs(game.players) do ensure(p) end
+	end
+	script.on_init(ensureAll)
+	script.on_configuration_changed(ensureAll)
+end
