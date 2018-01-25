@@ -44,13 +44,13 @@ local function ensureBook(player)
 	local invMain = player.get_inventory(defines.inventory.player_main)
 	if invMain and invMain.valid then
 		local b = invMain.find_item_stack("decal-book")
-		if b then return b end
+		if b and b.valid then return b end
 	end
 
 	local invQuick = player.get_inventory(defines.inventory.player_quickbar)
 	if invQuick and invQuick.valid then
 		local b = invQuick.find_item_stack("decal-book")
-		if b then return b end
+		if b and b.valid then return b end
 	end
 
 	local findHere
@@ -63,8 +63,9 @@ local function ensureBook(player)
 	end
 	if findHere then
 		for i = 1, #findHere do
-			if findHere[i].name == "decal-book" then
-				return findHere[i]
+			local f = findHere[i]
+			if f and f.valid and f.name == "decal-book" then
+				return f
 			end
 		end
 	end
@@ -92,10 +93,10 @@ end)
 do
 	local function onInventoryChanged(player, inventory)
 		local decal = inventory.find_item_stack("decal-blueprint")
-		if not decal then return end
+		if not decal or not decal.valid then return end
 		decal.clear() -- Nukes it
 		local book = ensureBook(player)
-		if book then ensureDecals(book) end
+		if book and book.valid then ensureDecals(book) end
 	end
 	script.on_event(defines.events.on_player_main_inventory_changed, function(event)
 		local p = game.players[event.player_index]
@@ -122,7 +123,7 @@ do
 	local function ensure(player)
 		if not player or not player.valid then return end
 		local book = ensureBook(player)
-		if book then ensureDecals(book) end
+		if book and book.valid then ensureDecals(book) end
 	end
 
 	local function ensureSingle(event)
